@@ -29,7 +29,7 @@ public class UserDAOTest {
 	
 	@Test
 	public void TesthashPassword() {
-		User u1 = uDao.selectById(2);
+		User u1 = uDao.selectById(3);
 		u1.setPassword(Integer.toString(u1.hashCode()));
 		assertTrue(uDao.update(u1));
 	}
