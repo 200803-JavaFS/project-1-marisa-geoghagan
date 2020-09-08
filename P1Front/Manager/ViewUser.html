@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.1.1">
+    <title>Employee Reimbursement System</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link href="../Dashboard.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Employee Reimbursement System</a>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="ManagerDashboard.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Manager Tools</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="ViewRequests.html">View Requests</a>
+                        <a class="dropdown-item" href="ViewUser.html">View User History <span
+                                class="sr-only">(current)</span></a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Employee Tools</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="Submit.html">Submit</a>
+                        <a class="dropdown-item" href="UserHistory.html">View History</a>
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main role="main" class="container">
+        <div class="starter-template">
+            <h1>View Reimbursement Requests by User</h1>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered table-dark" id="userTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Submitted</th>
+                            <th>Resolved</th>
+                            <th>Author</th>
+                            <th>Resolver</th>
+                            <th>Status</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="btn-group btn-group-justified">
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary btn-block dropdown-toggle" type="button"
+                        data-toggle="dropdown">Users<span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-header" id="managerList">Finance Managers</li>
+                        <li class="dropdown-header" id="employeeList">Employees</li>
+                    </ul>
+                </div>
+            </div>
+    </main>
+
+    <script src="../P1.js"></script>
+    <script>
+        window.addEventListener('load', async (event) => {
+            let managerList = document.getElementById("managerList");
+            let employeeList = document.getElementById("employeeList");
+            let resp = await fetch(url + "getUsers", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            if (resp.status === 200) {
+                let data = await resp.json();
+                for (let user of data) {
+                    console.log(user);
+                    let listItem = document.createElement("li");
+                    listItem.innerHTML = '<a href="#" onClick="getUserHistory(' + user.userID + ')">' + user.firstName + " " + user.lastName + '</a>';
+                    if (user.roleID === 1) {
+                        managerList.appendChild(listItem);
+                    } else {
+                        employeeList.appendChild(listItem);
+                    }
+                }
+            } else {
+                console.log("Something went terribly wrong.");
+            }
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.1.1">
+    <title>Employee Reimbursement System</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link href="../Dashboard.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Employee Reimbursement System</a>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="UserDashboard.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Employee Tools</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="Submit.html">Submit</a>
+                        <a class="dropdown-item" href="UserHistory.html">View History <span class="sr-only">(current)</span></a>
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main role="main" class="container">
+        <div class="starter-template">
+            <h1>Your Reimbursement Requests</h1>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered table-dark" id="userTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Submitted</th>
+                            <th>Resolved</th>
+                            <th>Author</th>
+                            <th>Resolver</th>
+                            <th>Status</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+    </main>
+
+    <script>
+        window.addEventListener('load', async (event) => {
+            let user = sessionStorage.getItem("user");
+
+            let resp = await fetch(url + "ownHistory", {
+                method: "POST",
+                body: user,
+                credentials: "include"
+            });
+
+            if (resp.status === 200) {
+                let data = await resp.json();
+                for (let reimbursement of data) {
+                    console.log(reimbursement);
+                    let row = document.createElement("tr");
+                    let cell1 = document.createElement("td");
+                    cell1.innerHTML = reimbursement.id;
+                    row.appendChild(cell1);
+                    let cell2 = document.createElement("td");
+                    cell2.innerHTML = "$" + reimbursement.amount.toFixed(2);
+                    row.appendChild(cell2);
+                    let cell3 = document.createElement("td");
+                    cell3.innerHTML = reimbursement.description;
+                    row.appendChild(cell3);
+                    let cell4 = document.createElement("td");
+                    let submit = new Date(reimbursement.submitted)
+                    cell4.innerHTML = submit.format("mmmm d, yyyy, h:MM TT");
+                    row.appendChild(cell4);
+                    let cell5 = document.createElement("td");
+                    if (reimbursement.resolved === null) {
+                        cell5.innerHTML = "Unresolved";
+                    } else {
+                        let resolve = new Date(reimbursement.resolved)
+                        cell5.innerHTML = resolve.format("mmmm d, yyyy, h:MM TT");
+                    }
+                    row.appendChild(cell5);
+                    let cell6 = document.createElement("td");
+                    cell6.innerHTML = reimbursement.author.firstName + " " + reimbursement.author.lastName;
+                    row.appendChild(cell6);
+                    let cell7 = document.createElement("td");
+                    if (reimbursement.resolver === null) {
+                        cell7.innerHTML = "Unresolved";
+                    } else {
+                        cell7.innerHTML = reimbursement.resolver.firstName + " " + reimbursement.resolver.lastName;
+                    }
+                    row.appendChild(cell7);
+                    let cell8 = document.createElement("td");
+                    cell8.innerHTML = getStatus(reimbursement.statusID);
+                    row.appendChild(cell8);
+                    let cell9 = document.createElement("td");
+                    cell9.innerHTML = getType(reimbursement.typeID);
+                    row.appendChild(cell9);
+                    document.getElementById("tableBody").appendChild(row);
+                }
+            } else {
+                console.log("Something went bad.");
+            }
+        });
+    </script>
+    <script src="../P1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</html>
