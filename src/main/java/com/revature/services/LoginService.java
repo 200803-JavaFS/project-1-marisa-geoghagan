@@ -15,9 +15,9 @@ public class LoginService {
 		
 	public User login(LoginDTO ldto) {
 		User u = udao.selectByUsername(ldto.username);
-		log.debug("The password of the user in the database is " + u.getPassword()); // I know this is a bad thing to do.
-		log.debug("The password of the inputted user is " + ldto.password);
-		if(u.getPassword().equals(ldto.password)) {
+		log.debug("The hashed password of the user in the database is " + u.getPassword()); // I know this is a bad thing to do.
+		log.debug("The hashed password of the inputted user is " + ldto.hashCode());
+		if(u.getPassword().equals(Integer.toString(ldto.hashCode()))) {
 			log.info("Login sucessful!");
 			return u;
 		} else{
